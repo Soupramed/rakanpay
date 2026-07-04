@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galeri - RakanPay Admin</title>
+  <meta name="description" content="Kelola galeri RakanPay - Tambah, edit, dan hapus foto galeri.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar-bg: #1a1f37;
+      --sidebar-width: 240px;
+      --body-bg: #f0f2f8;
+      --card-bg: #ffffff;
+      --text-primary: #1a1f37;
+      --text-secondary: #6c7293;
+      --text-muted: #a0a3bd;
+      --accent-blue: #4f6cf7;
+      --accent-blue-light: #eef1ff;
+      --accent-red: #ff6b6b;
+      --accent-red-light: #fff0f0;
+      --accent-green: #2dce89;
+      --accent-green-light: #e8faf1;
+      --accent-orange: #fb6340;
+      --accent-orange-light: #fff3ef;
+      --accent-yellow: #ffc107;
+      --accent-yellow-light: #fff9e6;
+      --accent-cyan: #11cdef;
+      --border-color: #e9ecf5;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--body-bg);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================
+       SIDEBAR
+    ============================ */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #4f6cf7, #11cdef);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 20px; height: 20px; }
+
+    .logo-text-group { display: flex; flex-direction: column; }
+    .logo-brand { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+    .logo-sub { font-size: 0.55rem; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .sidebar-close {
+      background: none; border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer; padding: 4px;
+      transition: color 0.2s; font-size: 1.1rem;
+    }
+    .sidebar-close:hover { color: #fff; }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-label {
+      font-size: 0.65rem; font-weight: 700;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 16px 14px 8px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: 10px;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 0.88rem; font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; opacity: 0.7; }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+    .nav-item:hover svg { opacity: 1; }
+    .nav-item.active {
+      background: linear-gradient(135deg, var(--accent-blue), #6f86fc);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(79,108,247,0.35);
+    }
+    .nav-item.active svg { opacity: 1; }
+
+    /* ============================
+       MAIN CONTENT
+    ============================ */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      background: var(--body-bg);
+    }
+
+    .breadcrumb { display: flex; flex-direction: column; gap: 2px; }
+    .breadcrumb-path { font-size: 0.75rem; color: var(--text-muted); }
+    .breadcrumb-path a { color: var(--accent-blue); text-decoration: none; }
+    .breadcrumb-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+
+    .top-bar-actions { display: flex; align-items: center; gap: 12px; }
+
+    .search-box {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 9px 16px;
+      min-width: 200px;
+      box-shadow: var(--shadow-sm);
+    }
+    .search-box svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+    .search-box input {
+      border: none; outline: none; background: none;
+      font-size: 0.85rem; color: var(--text-primary);
+      font-family: inherit; width: 100%;
+    }
+    .search-box input::placeholder { color: var(--text-muted); }
+
+    .user-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), #11cdef);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(79,108,247,0.3);
+    }
+
+    .content-area { padding: 0 28px 28px; }
+
+    /* ============================
+       VIEWS
+    ============================ */
+    .view { display: none; animation: fadeIn 0.3s ease; }
+    .view.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================
+       LIST VIEW
+    ============================ */
+    .list-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px; flex-wrap: wrap; gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 10px;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none;
+      font-family: inherit; transition: all 0.2s ease;
+    }
+    .btn svg { width: 16px; height: 16px; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-blue), #6f86fc); color: #fff; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(79,108,247,0.35); }
+    .btn-secondary { background: var(--body-bg); color: var(--text-secondary); border: 1.5px solid var(--border-color); }
+    .btn-secondary:hover { background: #e4e7ef; }
+    .btn-danger { background: var(--accent-red-light); color: var(--accent-red); border: 1.5px solid var(--accent-red); }
+
+    .table-card {
+      background: var(--card-bg); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+      padding: 14px 20px; text-align: left; font-size: 0.72rem;
+      font-weight: 700; text-transform: uppercase; color: var(--text-muted);
+      background: var(--body-bg); border-bottom: 1px solid var(--border-color);
+    }
+    .data-table td {
+      padding: 14px 20px; font-size: 0.85rem; color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color); vertical-align: middle;
+    }
+    .data-table tr:hover td { background: #fafbff; }
+
+    .galeri-thumb {
+      width: 80px; height: 50px; border-radius: 8px; object-fit: cover;
+      background: #e9ecf5; display: block;
+    }
+
+    .action-btns { display: flex; gap: 6px; }
+    .action-btn {
+      width: 32px; height: 32px; border-radius: 8px; border: none;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;
+    }
+    .action-btn svg { width: 15px; height: 15px; }
+    .action-edit { background: var(--accent-green-light); color: var(--accent-green); }
+    .action-edit:hover { background: var(--accent-green); color: #fff; }
+    .action-delete { background: var(--accent-red-light); color: var(--accent-red); }
+    .action-delete:hover { background: var(--accent-red); color: #fff; }
+
+    /* ============================
+       FORM VIEW
+    ============================ */
+    .form-card {
+      background: var(--card-bg); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);
+      padding: 32px;
+    }
+    .form-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 28px; color: var(--text-primary); }
+    
+    .form-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block; font-size: 0.82rem; font-weight: 600;
+      color: var(--text-primary); margin-bottom: 8px;
+    }
+    .form-control {
+      width: 100%; padding: 11px 16px; background: var(--body-bg);
+      border: 1.5px solid var(--border-color); border-radius: 10px;
+      color: var(--text-primary); font-size: 0.88rem; font-family: inherit;
+      outline: none; transition: all 0.2s ease;
+    }
+    .form-control:focus { border-color: var(--accent-blue); background: #fff; }
+
+    .upload-area {
+      border: 2px dashed var(--border-color); border-radius: 14px;
+      padding: 40px 20px; text-align: center; cursor: pointer;
+      background: var(--body-bg); transition: all 0.3s;
+      height: 250px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .upload-area:hover { border-color: var(--accent-blue); background: var(--accent-blue-light); }
+    .upload-icon {
+      width: 56px; height: 56px; background: var(--accent-blue-light);
+      border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px; color: var(--accent-blue);
+    }
+    .upload-icon svg { width: 28px; height: 28px; }
+    .upload-text { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
+    .image-preview {
+      display: none; width: 100%; height: 250px; border-radius: 14px;
+      object-fit: cover; border: 1px solid var(--border-color);
+    }
+    
+    .form-actions { display: flex; gap: 10px; margin-top: 28px; }
+
+    /* ============================
+       MODALS & TOAST
+    ============================ */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(4px); display: none; align-items: center;
+      justify-content: center; z-index: 200; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--card-bg); border-radius: 18px; width: 100%;
+      max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); padding: 28px;
+      text-align: center;
+    }
+    .modal-icon {
+      width: 64px; height: 64px; background: var(--accent-red-light);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; color: var(--accent-red);
+    }
+    .modal-icon svg { width: 32px; height: 32px; }
+    .modal h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .modal p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; }
+    .modal-actions { display: flex; justify-content: center; gap: 10px; }
+
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; background: var(--card-bg);
+      border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 20px;
+      display: flex; align-items: center; gap: 10px; font-size: 0.85rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 300;
+      transform: translateY(100px); opacity: 0; transition: all 0.3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 4px solid var(--accent-green); }
+    .toast.error { border-left: 4px solid var(--accent-red); }
+
+    /* Mobile */
+    .mobile-menu-btn { display: none; background: none; border: none; color: var(--text-primary); cursor: pointer; padding: 4px; }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); box-shadow: 10px 0 40px rgba(0,0,0,0.3); }
+      .main-content { margin-left: 0; }
+      .mobile-menu-btn { display: flex; }
+      .form-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:99;"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="white"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-brand">RAKAN</span>
+          <span class="logo-sub">Force Digital</span>
+        </div>
+      </a>
+      <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close sidebar">✕</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Dashboard
+      </a>
+      <div class="nav-label">Pages</div>
+      <a href="produk.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Produk
+      </a>
+      <a href="berita.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2"/></svg>
+        Berita
+      </a>
+      <a href="galeri.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Galeri
+      </a>
+      <a href="promo.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Promo
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Administration
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        Assets
+      </a>
+      <a href="settings.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="breadcrumb">
+          <span class="breadcrumb-path"><a href="#">Pages</a> / <span id="breadcrumbCurrent">Galeri</span></span>
+          <h1 class="breadcrumb-title" id="pageTitle">Daftar Galeri</h1>
+        </div>
+      </div>
+      <div class="top-bar-actions">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search">
+        </div>
+        <div class="user-avatar" id="userAvatar">A</div>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <!-- VIEW: LIST -->
+      <div class="view active" id="viewList">
+        <div class="list-header">
+          <h2 style="font-size:1.1rem; color:var(--text-primary);">Daftar Galeri</h2>
+          <button class="btn btn-primary" onclick="showView('add')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Tambah Galeri
+          </button>
+        </div>
+
+        <div class="table-card" style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:50px">No</th>
+                <th style="width:100px">Image</th>
+                <th>Caption</th>
+                <th>Penulis</th>
+                <th style="width:100px">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="dataTable">
+              <!-- Data injected here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- VIEW: ADD -->
+      <div class="view" id="viewAdd">
+        <div class="form-card" style="max-width:1000px">
+          <h2 class="form-title">Tambah Galeri</h2>
+          <form id="addForm" onsubmit="return false;">
+            <div class="form-layout">
+              <div class="form-left">
+                <div class="form-group">
+                  <label>Caption</label>
+                  <textarea class="form-control" id="addCaption" required placeholder="Tuliskan deskripsi singkat gambar..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Penulis</label>
+                  <input type="text" class="form-control" id="addPenulis" value="Admin" readonly>
+                </div>
+              </div>
+              <div class="form-right">
+                <div class="form-group">
+                  <label>Upload Gambar</label>
+                  <div class="upload-area" id="uploadAddArea" onclick="document.getElementById('addFile').click()">
+                    <input type="file" id="addFile" style="display:none" accept="image/*">
+                    <div class="upload-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <p class="upload-text">Klik untuk pilih gambar</p>
+                  </div>
+                  <img src="" class="image-preview" id="previewAdd" onclick="document.getElementById('addFile').click()" style="cursor:pointer">
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="saveData()">Tambah Galeri</button>
+              <button class="btn btn-secondary" onclick="showView('list')">Kembali</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- VIEW: EDIT -->
+      <div class="view" id="viewEdit">
+        <div class="form-card" style="max-width:1000px">
+          <h2 class="form-title">Edit Galeri</h2>
+          <form id="editForm" onsubmit="return false;">
+            <input type="hidden" id="editId">
+            <div class="form-layout">
+              <div class="form-left">
+                <div class="form-group">
+                  <label>Caption</label>
+                  <textarea class="form-control" id="editCaption" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Penulis</label>
+                  <input type="text" class="form-control" id="editPenulis" value="Admin" readonly>
+                </div>
+              </div>
+              <div class="form-right">
+                <div class="form-group">
+                  <label>Upload Gambar (Biarkan kosong jika tidak diubah)</label>
+                  <div class="upload-area" id="uploadEditArea" onclick="document.getElementById('editFile').click()" style="display:none;">
+                    <input type="file" id="editFile" style="display:none" accept="image/*">
+                    <div class="upload-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <p class="upload-text">Upload Gambar Baru</p>
+                  </div>
+                  <img src="" class="image-preview" id="previewEdit" onclick="document.getElementById('editFile').click()" style="cursor:pointer">
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-danger" onclick="openDeleteModal(currentData.id)" type="button">Hapus Foto</button>
+              <button class="btn btn-primary" onclick="updateData()">Simpan Perubahan</button>
+              <button class="btn btn-secondary" onclick="showView('list')">Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </div>
+      <h3>Hapus Galeri?</h3>
+      <p>Foto galeri ini akan dihapus secara permanen.</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">Batal</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mock Data for Galeri because API doesn't exist yet
+    let mockData = [
+      { id: 1, caption: 'Kegiatan Rapat Tahunan 2026', penulis: 'Admin', image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=400&q=80' },
+      { id: 2, caption: 'Peresmian Cabang Baru', penulis: 'Admin', image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80' },
+      { id: 3, caption: 'Tim RakanPay Berprestasi', penulis: 'Admin', image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80' }
+    ];
+
+    let currentData = null;
+    let deleteId = null;
+
+    // View logic
+    function showView(view, dataId = null) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const breadcrumb = document.getElementById('breadcrumbCurrent');
+      const title = document.getElementById('pageTitle');
+
+      switch(view) {
+        case 'list':
+          document.getElementById('viewList').classList.add('active');
+          breadcrumb.textContent = 'Galeri';
+          title.textContent = 'Daftar Galeri';
+          renderList();
+          break;
+        case 'add':
+          document.getElementById('viewAdd').classList.add('active');
+          breadcrumb.textContent = 'Galeri';
+          title.textContent = 'Tambah Galeri';
+          document.getElementById('addForm').reset();
+          document.getElementById('previewAdd').style.display = 'none';
+          document.getElementById('uploadAddArea').style.display = 'flex';
+          break;
+        case 'edit':
+          document.getElementById('viewEdit').classList.add('active');
+          breadcrumb.textContent = 'Galeri';
+          title.textContent = 'Edit Galeri';
+          const data = mockData.find(m => m.id === dataId);
+          currentData = data;
+          fillEdit(data);
+          break;
+      }
+    }
+
+    function fillEdit(d) {
+      document.getElementById('editId').value = d.id;
+      document.getElementById('editCaption').value = d.caption;
+      
+      const prev = document.getElementById('previewEdit');
+      const area = document.getElementById('uploadEditArea');
+      if (d.image) {
+        prev.src = d.image;
+        prev.style.display = 'block';
+        area.style.display = 'none';
+      } else {
+        prev.style.display = 'none';
+        area.style.display = 'flex';
+      }
+    }
+
+    function renderList() {
+      const tbody = document.getElementById('dataTable');
+      if (mockData.length > 0) {
+        tbody.innerHTML = mockData.map((b, i) => `
+          <tr>
+            <td>${i + 1}</td>
+            <td><img src="${b.image}" class="galeri-thumb" alt="Thumb"></td>
+            <td style="font-weight:600; color:var(--text-primary)">${b.caption}</td>
+            <td>${b.penulis}</td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn action-edit" onclick='showView("edit", ${b.id})'>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="action-btn action-delete" onclick="openDeleteModal(${b.id})">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted)">Tidak ada data galeri</td></tr>';
+      }
+    }
+
+    function saveData() {
+      const caption = document.getElementById('addCaption').value;
+      if (!caption) return showToast('Caption wajib diisi', 'error');
+
+      const fileInput = document.getElementById('addFile');
+      let image = 'https://via.placeholder.com/400x250?text=New+Image';
+      if(fileInput.files[0]) image = URL.createObjectURL(fileInput.files[0]);
+
+      const newId = mockData.length ? Math.max(...mockData.map(m=>m.id)) + 1 : 1;
+      mockData.unshift({ id: newId, caption, penulis: 'Admin', image });
+      
+      showToast('Galeri berhasil ditambahkan');
+      showView('list');
+    }
+
+    function updateData() {
+      const id = parseInt(document.getElementById('editId').value);
+      const caption = document.getElementById('editCaption').value;
+      
+      if (!caption) return showToast('Caption wajib diisi', 'error');
+
+      const idx = mockData.findIndex(m => m.id === id);
+      if(idx !== -1) {
+        mockData[idx].caption = caption;
+        const fileInput = document.getElementById('editFile');
+        if(fileInput.files[0]) mockData[idx].image = URL.createObjectURL(fileInput.files[0]);
+        
+        showToast('Galeri diupdate');
+        showView('list');
+      }
+    }
+
+    // Image preview handlers
+    document.getElementById('addFile').onchange = function(e) {
+      if(this.files[0]) {
+        document.getElementById('previewAdd').src = URL.createObjectURL(this.files[0]);
+        document.getElementById('previewAdd').style.display = 'block';
+        document.getElementById('uploadAddArea').style.display = 'none';
+      }
+    };
+    document.getElementById('editFile').onchange = function(e) {
+      if(this.files[0]) {
+        document.getElementById('previewEdit').src = URL.createObjectURL(this.files[0]);
+        document.getElementById('previewEdit').style.display = 'block';
+        document.getElementById('uploadEditArea').style.display = 'none';
+      }
+    };
+
+    // Delete
+    function openDeleteModal(id) {
+      deleteId = id;
+      document.getElementById('deleteModal').classList.add('active');
+    }
+    function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); }
+    
+    document.getElementById('confirmDeleteBtn').onclick = () => {
+      mockData = mockData.filter(m => m.id !== deleteId);
+      showToast('Foto dihapus');
+      closeDeleteModal();
+      showView('list');
+    };
+
+    function showToast(msg, type = 'success') {
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.innerHTML = `<span>${msg}</span>`;
+      document.body.appendChild(t);
+      setTimeout(() => t.classList.add('show'), 50);
+      setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
+    }
+
+    // Init
+    renderList();
+    
+    // Sidebar logic
+    document.getElementById('mobileMenuBtn').onclick = () => {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebarOverlay').style.display = 'block';
+    };
+    document.getElementById('sidebarCloseBtn').onclick = document.getElementById('sidebarOverlay').onclick = () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').style.display = 'none';
+    };
+  </script>
+</body>
+</html>

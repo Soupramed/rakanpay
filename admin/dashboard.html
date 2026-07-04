@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - RakanPay Admin</title>
+  <meta name="description" content="Dashboard admin panel RakanPay - Monitoring produk, berita, promo, dan aktivitas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar-bg: #1a1f37;
+      --sidebar-width: 240px;
+      --body-bg: #f0f2f8;
+      --card-bg: #ffffff;
+      --text-primary: #1a1f37;
+      --text-secondary: #6c7293;
+      --text-muted: #a0a3bd;
+      --accent-blue: #4f6cf7;
+      --accent-blue-light: #eef1ff;
+      --accent-red: #ff6b6b;
+      --accent-red-light: #fff0f0;
+      --accent-green: #2dce89;
+      --accent-green-light: #e8faf1;
+      --accent-orange: #fb6340;
+      --accent-orange-light: #fff3ef;
+      --accent-yellow: #ffc107;
+      --accent-yellow-light: #fff9e6;
+      --accent-cyan: #11cdef;
+      --border-color: #e9ecf5;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--body-bg);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================
+       SIDEBAR
+    ============================ */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #4f6cf7, #11cdef);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .logo-icon svg { width: 20px; height: 20px; }
+
+    .logo-text-group { display: flex; flex-direction: column; }
+    .logo-brand { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+    .logo-sub { font-size: 0.55rem; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .sidebar-close {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      padding: 4px;
+      transition: color 0.2s;
+      font-size: 1.1rem;
+    }
+    .sidebar-close:hover { color: #fff; }
+
+    /* Sidebar Navigation */
+    .sidebar-nav {
+      flex: 1;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 16px 14px 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; opacity: 0.7; }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+    .nav-item:hover svg { opacity: 1; }
+
+    .nav-item.active {
+      background: linear-gradient(135deg, var(--accent-blue), #6f86fc);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(79, 108, 247, 0.35);
+    }
+    .nav-item.active svg { opacity: 1; }
+
+    /* ============================
+       MAIN CONTENT
+    ============================ */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      background: var(--body-bg);
+    }
+
+    .breadcrumb {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .breadcrumb-path {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .breadcrumb-path a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+    .breadcrumb-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 9px 16px;
+      min-width: 200px;
+      box-shadow: var(--shadow-sm);
+    }
+    .search-box svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+    .search-box input {
+      border: none;
+      outline: none;
+      background: none;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      width: 100%;
+    }
+    .search-box input::placeholder { color: var(--text-muted); }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .icon-btn svg { width: 18px; height: 18px; }
+    .icon-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+    .notification-dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 8px;
+      height: 8px;
+      background: var(--accent-red);
+      border-radius: 50%;
+      border: 2px solid var(--card-bg);
+    }
+
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), #11cdef);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(79, 108, 247, 0.3);
+    }
+
+    /* Content Area */
+    .content-area {
+      padding: 0 28px 28px;
+    }
+
+    /* ============================
+       STAT CARDS
+    ============================ */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      transition: all 0.25s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-info { display: flex; flex-direction: column; gap: 4px; }
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
+    .stat-number { font-size: 1.7rem; font-weight: 800; color: var(--text-primary); line-height: 1; }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .stat-icon svg { width: 22px; height: 22px; }
+
+    .stat-card.blue .stat-icon { background: var(--accent-blue); color: #fff; }
+    .stat-card.red .stat-icon { background: var(--accent-red); color: #fff; }
+    .stat-card.green .stat-icon { background: var(--accent-green); color: #fff; }
+    .stat-card.cyan .stat-icon { background: var(--accent-cyan); color: #fff; }
+
+    /* ============================
+       INFO CARDS ROW
+    ============================ */
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+    }
+
+    .info-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .info-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .info-card-title svg { width: 18px; height: 18px; color: var(--text-muted); }
+
+    .info-more {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      transition: all 0.2s;
+    }
+    .info-more:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+    /* Product Info Grid */
+    .product-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .product-info-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .product-info-details { display: flex; flex-direction: column; gap: 2px; }
+    .product-info-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+    .product-info-value { font-size: 1.25rem; font-weight: 800; }
+    .product-info-value.green { color: var(--accent-green); }
+    .product-info-value.blue { color: var(--accent-blue); }
+    .product-info-value.red { color: var(--accent-red); }
+    .product-info-value.yellow { color: var(--accent-yellow); }
+
+    .info-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .info-icon svg { width: 20px; height: 20px; }
+
+    .info-icon.green { background: var(--accent-green-light); color: var(--accent-green); }
+    .info-icon.blue { background: var(--accent-blue-light); color: var(--accent-blue); }
+    .info-icon.red { background: var(--accent-red-light); color: var(--accent-red); }
+    .info-icon.yellow { background: var(--accent-yellow-light); color: var(--accent-yellow); }
+
+    /* Storage Chart */
+    .storage-section {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .donut-container {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+    }
+
+    .donut-center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .donut-percent { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); display: block; }
+    .donut-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; }
+
+    .storage-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .legend-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .legend-dot.blue { background: var(--accent-blue); }
+    .legend-dot.gray { background: #d1d5db; }
+
+    .legend-name { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+    .legend-value {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: var(--body-bg);
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+
+    /* ============================
+       LOG AKTIVITAS
+    ============================ */
+    .log-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    .log-table th {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .log-table th.col-no { color: var(--text-primary); }
+    .log-table th.col-aktivitas { color: var(--accent-blue); }
+    .log-table th.col-eksekutor { color: var(--accent-green); }
+    .log-table th.col-tanggal { color: var(--accent-yellow); }
+
+    .log-table td {
+      padding: 14px 12px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .log-table tr:last-child td { border-bottom: none; }
+    .log-table tr:hover td { background: var(--body-bg); }
+
+    .badge-role {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-admin { border: 1.5px solid var(--accent-green); color: var(--accent-green); }
+    .badge-superadmin { border: 1.5px solid var(--accent-blue); color: var(--accent-blue); }
+
+    /* ============================
+       MOBILE MENU
+    ============================ */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 4px;
+    }
+    .mobile-menu-btn svg { width: 24px; height: 24px; }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 99;
+    }
+    .sidebar-overlay.active { display: block; }
+
+    /* ============================
+       ANIMATIONS
+    ============================ */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-card { animation: fadeInUp 0.4s ease both; }
+    .stat-card:nth-child(1) { animation-delay: 0.05s; }
+    .stat-card:nth-child(2) { animation-delay: 0.1s; }
+    .stat-card:nth-child(3) { animation-delay: 0.15s; }
+    .stat-card:nth-child(4) { animation-delay: 0.2s; }
+
+    .info-card { animation: fadeInUp 0.4s ease both; animation-delay: 0.25s; }
+    .log-card { animation: fadeInUp 0.4s ease both; animation-delay: 0.35s; }
+
+    /* Donut animation */
+    @keyframes donutSpin {
+      from { stroke-dashoffset: 440; }
+    }
+
+    .donut-segment {
+      animation: donutSpin 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation-delay: 0.5s;
+    }
+
+    /* ============================
+       RESPONSIVE
+    ============================ */
+    @media (max-width: 1200px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 1024px) {
+      .info-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 10px 0 40px rgba(0,0,0,0.3);
+      }
+      .main-content { margin-left: 0; }
+      .mobile-menu-btn { display: flex; }
+
+      .top-bar { padding: 12px 16px; }
+      .content-area { padding: 0 16px 16px; }
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .search-box { min-width: 140px; }
+      .storage-section { flex-direction: column; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .product-info-grid { grid-template-columns: 1fr; }
+      .top-bar-actions { gap: 6px; }
+      .search-box { display: none; }
+    }
+    /* ============================
+       PROMO BANNER
+    ============================ */
+    .promo-banner {
+      background: linear-gradient(135deg, #00A5CF 0%, #0081A7 100%);
+      border-radius: 24px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      min-height: 280px;
+    }
+    .promo-banner::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 35%;
+      background: #00D26A; /* Bright green bottom part */
+      z-index: 1;
+    }
+    .promo-banner-content {
+      padding: 40px 48px;
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .promo-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+    .promo-logo svg {
+      width: 28px;
+      height: 28px;
+    }
+    .promo-title {
+      color: #fff;
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      line-height: 1.1;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .promo-desc {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      max-width: 500px;
+    }
+    .promo-downloads {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    .store-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #000;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: transform 0.2s;
+    }
+    .store-btn:hover {
+      transform: translateY(-2px);
+    }
+    .store-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+    .store-btn div {
+      display: flex;
+      flex-direction: column;
+    }
+    .store-btn span {
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .store-btn strong {
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+    .promo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #000;
+      width: fit-content;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      position: absolute;
+      bottom: 25px;
+      left: 48px;
+      z-index: 3;
+    }
+    .promo-badge svg {
+      width: 18px;
+      height: 18px;
+      color: #00A5CF;
+    }
+    .promo-banner-image {
+      position: relative;
+      width: 45%;
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding-right: 48px;
+    }
+    .promo-banner-image img {
+      max-width: 100%;
+      height: 320px;
+      object-fit: contain;
+      transform: rotate(-15deg) translateY(20px);
+      filter: drop-shadow(-10px 15px 25px rgba(0,0,0,0.25));
+    }
+    @media (max-width: 1200px) {
+      .promo-banner-image img { height: 260px; }
+      .promo-title { font-size: 2.2rem; }
+    }
+    @media (max-width: 900px) {
+      .promo-banner { flex-direction: column; }
+      .promo-banner-image { width: 100%; padding: 0 40px; justify-content: center; margin-top: 20px; }
+      .promo-banner-image img { transform: rotate(0) translateY(10px); height: 280px; }
+      .promo-badge { bottom: 20px; left: 20px; }
+    }
+    .official-logo-sidebar {
+      height: 44px;
+      width: auto;
+      border-radius: 6px;
+      object-fit: contain;
+    }
+    .official-logo-white {
+      height: 48px;
+      width: auto;
+      border-radius: 6px;
+      object-fit: contain;
+      filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="white"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-brand">RAKAN</span>
+          <span class="logo-sub">Force Digital</span>
+        </div>
+      </a>
+      <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close sidebar">✕</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item active" id="navDashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Dashboard
+      </a>
+
+      <div class="nav-label">Pages</div>
+
+      <a href="produk.html" class="nav-item" id="navProduk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Produk
+      </a>
+      <a href="berita.html" class="nav-item" id="navBerita">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2"/></svg>
+        Berita
+      </a>
+      <a href="#" class="nav-item" id="navGaleri">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Galeri
+      </a>
+      <a href="promo.html" class="nav-item" id="navPromo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Promo
+      </a>
+      <a href="#" class="nav-item" id="navAdministration">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Administration
+      </a>
+      <a href="#" class="nav-item" id="navAssets">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        Assets
+      </a>
+      <a href="#" class="nav-item" id="navSettings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="breadcrumb">
+          <span class="breadcrumb-path"><a href="#">Pages</a> / Dashboard</span>
+          <h1 class="breadcrumb-title">Dashboard</h1>
+        </div>
+      </div>
+      <div class="top-bar-actions">
+        <div class="search-box" id="searchBox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search" id="searchInput" aria-label="Search">
+        </div>
+        <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notification-dot" id="notifDot" style="display:none;"></span>
+        </button>
+        <button class="icon-btn" id="darkModeBtn" aria-label="Toggle dark mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <div class="user-avatar" id="userAvatar">A</div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="content-area">
+      <!-- Promo Banner -->
+      <div class="promo-banner">
+        <div class="promo-banner-content">
+          <div class="promo-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5H5v5"/></svg>
+            <span>rakanpay</span>
+          </div>
+          <h2 class="promo-title">Baru! Aplikasi RakanPay</h2>
+          <p class="promo-desc">Aplikasi ringan untuk transaksi ke mana aja dan bayar apa aja.<br>Download aplikasi RakanPay sekarang!</p>
+          <div class="promo-downloads">
+            <a href="#" class="store-btn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5v-17c0-.8.6-1.5 1.5-1.5.3 0 .6.1.8.3l12 11.2c.4.4.4 1 0 1.4l-12 11.2c-.2.2-.5.3-.8.3-.9 0-1.5-.7-1.5-1.5z"/></svg>
+              <div>
+                <span>GET IT ON</span>
+                <strong>Google Play</strong>
+              </div>
+            </a>
+            <a href="#" class="store-btn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3.5c-.8 1-2 1.6-3.2 1.6-.1-1.3.6-2.5 1.4-3.3C15 1 16.2.4 17.5.3c.1 1.4-.5 2.6-1.5 3.2zm-2.8 2.2c-1.3 0-2.8.8-4.2.8-1.5 0-3-.8-4.2-.8-1.9 0-3.6 1.3-4.5 3-.9 1.7-.9 4.3.2 6.5 1.1 2.2 3.1 5.9 5.5 5.9 1.4 0 2-.8 3.5-.8s2.1.8 3.5.8c2.4 0 4.1-3.3 5.2-5.5.9-1.9.9-4.1-.1-5.7-1.1-1.8-3-2.9-4.9-2.9-1.2 0-2.5.6-3.5 1.3-1-.6-2.3-1.3-3.6-1.3z"/></svg>
+              <div>
+                <span>Download on the</span>
+                <strong>App Store</strong>
+              </div>
+            </a>
+          </div>
+          <div class="promo-badge">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7l1 15 8 2 8-2 1-15-9-5zm0 18l-6-1.5-.8-12.5L12 4l6.8 3.5-.8 12.5L12 20zm-1-8h2v5h-2v-5zm0-4h2v2h-2V8z"/></svg>
+            rakanpay aman
+          </div>
+        </div>
+        <div class="promo-banner-image">
+          <img src="../assets/images/hero_mockup.png" alt="RakanPay App">
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stats-row">
+        <div class="stat-card blue" id="statProduk">
+          <div class="stat-info">
+            <span class="stat-label">Produk</span>
+            <span class="stat-number" id="totalProduk">20.837</span>
+          </div>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          </div>
+        </div>
+        <div class="stat-card red" id="statBerita">
+          <div class="stat-info">
+            <span class="stat-label">Berita</span>
+            <span class="stat-number" id="totalBerita">32</span>
+          </div>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2"/></svg>
+          </div>
+        </div>
+        <div class="stat-card green" id="statPromo">
+          <div class="stat-info">
+            <span class="stat-label">Promo</span>
+            <span class="stat-number" id="totalPromo">47</span>
+          </div>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+        </div>
+        <div class="stat-card cyan" id="statTeam">
+          <div class="stat-info">
+            <span class="stat-label">Team</span>
+            <span class="stat-number" id="totalTeam">10</span>
+          </div>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Cards Row -->
+      <div class="info-row">
+        <!-- Info Produk -->
+        <div class="info-card" id="infoProdukCard">
+          <div class="info-card-header">
+            <div class="info-card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Info Produk
+            </div>
+            <button class="info-more" aria-label="More info">ⓘ</button>
+          </div>
+          <div class="product-info-grid">
+            <div class="product-info-item">
+              <div class="product-info-details">
+                <span class="product-info-label">Tersedia</span>
+                <span class="product-info-value green" id="produkTersedia">12.345</span>
+              </div>
+              <div class="info-icon green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </div>
+            <div class="product-info-item">
+              <div class="product-info-details">
+                <span class="product-info-label">Harga Naik</span>
+                <span class="product-info-value blue" id="produkNaik">12.345</span>
+              </div>
+              <div class="info-icon blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              </div>
+            </div>
+            <div class="product-info-item">
+              <div class="product-info-details">
+                <span class="product-info-label">Gangguan</span>
+                <span class="product-info-value red" id="produkGangguan">12.345</span>
+              </div>
+              <div class="info-icon red">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              </div>
+            </div>
+            <div class="product-info-item">
+              <div class="product-info-details">
+                <span class="product-info-label">Harga Turun</span>
+                <span class="product-info-value yellow" id="produkTurun">12.345</span>
+              </div>
+              <div class="info-icon yellow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kapasitas Penyimpanan -->
+        <div class="info-card" id="storageCard">
+          <div class="info-card-header">
+            <div class="info-card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              Kapasitas Penyimpanan
+            </div>
+            <button class="info-more" aria-label="Storage info">ⓘ</button>
+          </div>
+          <div class="storage-section">
+            <div class="donut-container" id="donutChart">
+              <svg viewBox="0 0 160 160" width="160" height="160">
+                <!-- Background track -->
+                <circle cx="80" cy="80" r="62" fill="none" stroke="#e9ecf5" stroke-width="16" />
+                <!-- Used segment (75%) -->
+                <circle cx="80" cy="80" r="62" fill="none"
+                  stroke="url(#donutGradient)" stroke-width="16"
+                  stroke-dasharray="292 97.5"
+                  stroke-dashoffset="0"
+                  stroke-linecap="round"
+                  transform="rotate(-90 80 80)"
+                  class="donut-segment" />
+                <defs>
+                  <linearGradient id="donutGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#4f6cf7"/>
+                    <stop offset="100%" stop-color="#11cdef"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="donut-center-text">
+                <span class="donut-percent" id="storagePercent">75%</span>
+                <span class="donut-label">Digunakan</span>
+              </div>
+            </div>
+            <div class="storage-legend">
+              <div class="legend-item">
+                <div class="legend-left">
+                  <span class="legend-dot blue"></span>
+                  <span class="legend-name">Penyimpanan<br>Digunakan</span>
+                </div>
+                <span class="legend-value" id="storageUsed">305.90 MB</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-left">
+                  <span class="legend-dot gray"></span>
+                  <span class="legend-name">Penyimpanan<br>Tersedia</span>
+                </div>
+                <span class="legend-value" id="storageAvailable">195.10 MB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Log Aktivitas -->
+      <div class="log-card" id="logCard">
+        <div class="info-card-header">
+          <div class="info-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Log Aktivitas
+          </div>
+          <button class="info-more" aria-label="Log info">ⓘ</button>
+        </div>
+        <table class="log-table" id="logTable">
+          <thead>
+            <tr>
+              <th class="col-no" style="width:60px;">NO</th>
+              <th class="col-aktivitas">Aktivitas</th>
+              <th class="col-eksekutor">Eksekutor</th>
+              <th class="col-tanggal">Tanggal Update</th>
+            </tr>
+          </thead>
+          <tbody id="logBody">
+            <tr>
+              <td>1</td>
+              <td>Update Produk SH15 Tersedia > Gangguan</td>
+              <td><span class="badge-role badge-admin">Admin</span></td>
+              <td>05 September 2025</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Tambah Item Assets Pulpen Pna</td>
+              <td><span class="badge-role badge-superadmin">Super Admin</span></td>
+              <td>03 September 2025</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Update Promo Diskon 50% Flash Sale</td>
+              <td><span class="badge-role badge-admin">Admin</span></td>
+              <td>01 September 2025</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Hapus Berita Lama - Promo Akhir Tahun</td>
+              <td><span class="badge-role badge-superadmin">Super Admin</span></td>
+              <td>28 Agustus 2025</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Tambah Produk Baru KP-2025 Paket Internet</td>
+              <td><span class="badge-role badge-admin">Admin</span></td>
+              <td>25 Agustus 2025</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ---- Mobile Menu Toggle ----
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const closeBtn = document.getElementById('sidebarCloseBtn');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    }
+
+    mobileBtn.addEventListener('click', openSidebar);
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    // ---- Auth Check ----
+    fetch('../api/auth.php')
+      .then(r => r.json())
+      .then(data => {
+        if (!data.authenticated) {
+          window.location.href = '../login.html';
+        } else {
+          const name = data.user?.nama || 'Admin';
+          document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
+        }
+      })
+      .catch(() => {
+        // If auth fails, still show dashboard with demo data
+        console.log('Auth check failed, showing demo data');
+      });
+
+    // ---- Load Dashboard Data ----
+    async function loadDashboard() {
+      try {
+        const [produkRes, promoRes, beritaRes, pesanRes] = await Promise.all([
+          fetch('../api/produk.php').then(r => r.json()).catch(() => ({ data: [] })),
+          fetch('../api/promo.php').then(r => r.json()).catch(() => ({ data: [] })),
+          fetch('../api/berita.php').then(r => r.json()).catch(() => ({ data: [] })),
+          fetch('../api/admin/pesan.php').then(r => r.json()).catch(() => ({ data: [] }))
+        ]);
+
+        // Update stats with formatted numbers
+        const totalProduk = produkRes.pagination?.total || produkRes.data?.length || 0;
+        const totalBerita = (beritaRes.featured ? 1 : 0) + (beritaRes.data?.length || 0);
+        const totalPromo = promoRes.data?.length || 0;
+
+        if (totalProduk > 0) {
+          document.getElementById('totalProduk').textContent = totalProduk.toLocaleString('id-ID');
+        }
+        if (totalBerita > 0) {
+          document.getElementById('totalBerita').textContent = totalBerita;
+        }
+        if (totalPromo > 0) {
+          document.getElementById('totalPromo').textContent = totalPromo;
+        }
+
+        // Count product statuses
+        const products = produkRes.data || [];
+        const statusCount = { Tersedia: 0, 'Harga Naik': 0, Gangguan: 0, 'Harga Turun': 0 };
+        products.forEach(p => {
+          if (statusCount.hasOwnProperty(p.status)) statusCount[p.status]++;
+        });
+
+        if (products.length > 0) {
+          document.getElementById('produkTersedia').textContent = statusCount.Tersedia.toLocaleString('id-ID');
+          document.getElementById('produkNaik').textContent = statusCount['Harga Naik'].toLocaleString('id-ID');
+          document.getElementById('produkGangguan').textContent = statusCount.Gangguan.toLocaleString('id-ID');
+          document.getElementById('produkTurun').textContent = statusCount['Harga Turun'].toLocaleString('id-ID');
+        }
+
+        // Unread notification dot
+        if (pesanRes.unread > 0) {
+          document.getElementById('notifDot').style.display = 'block';
+        }
+
+      } catch (err) {
+        console.log('Dashboard data load info:', err.message);
+      }
+    }
+
+    loadDashboard();
+
+    // ---- Animated Number Counter ----
+    function animateNumber(el, target) {
+      const duration = 1200;
+      const start = 0;
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(start + (target - start) * eased);
+        el.textContent = current.toLocaleString('id-ID');
+        if (progress < 1) requestAnimationFrame(update);
+        else el.textContent = target.toLocaleString('id-ID');
+      }
+      requestAnimationFrame(update);
+    }
+
+    // Trigger animations after page load
+    window.addEventListener('load', () => {
+      // Animate stat numbers
+      const statEls = document.querySelectorAll('.stat-number');
+      statEls.forEach(el => {
+        const text = el.textContent.replace(/\./g, '').replace(/,/g, '');
+        const num = parseInt(text) || 0;
+        if (num > 0) animateNumber(el, num);
+      });
+    });
+  </script>
+</body>
+</html>

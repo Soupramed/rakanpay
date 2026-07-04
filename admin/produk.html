@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produk - RakanPay Admin</title>
+  <meta name="description" content="Kelola produk RakanPay - Tambah, edit, hapus, dan import data produk.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar-bg: #1a1f37;
+      --sidebar-width: 240px;
+      --body-bg: #f0f2f8;
+      --card-bg: #ffffff;
+      --text-primary: #1a1f37;
+      --text-secondary: #6c7293;
+      --text-muted: #a0a3bd;
+      --accent-blue: #4f6cf7;
+      --accent-blue-light: #eef1ff;
+      --accent-red: #ff6b6b;
+      --accent-red-light: #fff0f0;
+      --accent-green: #2dce89;
+      --accent-green-light: #e8faf1;
+      --accent-orange: #fb6340;
+      --accent-orange-light: #fff3ef;
+      --accent-yellow: #ffc107;
+      --accent-yellow-light: #fff9e6;
+      --accent-cyan: #11cdef;
+      --border-color: #e9ecf5;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--body-bg);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================
+       SIDEBAR
+    ============================ */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #4f6cf7, #11cdef);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 20px; height: 20px; }
+
+    .logo-text-group { display: flex; flex-direction: column; }
+    .logo-brand { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+    .logo-sub { font-size: 0.55rem; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .sidebar-close {
+      background: none; border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer; padding: 4px;
+      transition: color 0.2s; font-size: 1.1rem;
+    }
+    .sidebar-close:hover { color: #fff; }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-label {
+      font-size: 0.65rem; font-weight: 700;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 16px 14px 8px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: 10px;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 0.88rem; font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; opacity: 0.7; }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+    .nav-item:hover svg { opacity: 1; }
+    .nav-item.active {
+      background: linear-gradient(135deg, var(--accent-blue), #6f86fc);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(79,108,247,0.35);
+    }
+    .nav-item.active svg { opacity: 1; }
+
+    /* ============================
+       MAIN CONTENT
+    ============================ */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      background: var(--body-bg);
+    }
+
+    .breadcrumb { display: flex; flex-direction: column; gap: 2px; }
+    .breadcrumb-path { font-size: 0.75rem; color: var(--text-muted); }
+    .breadcrumb-path a { color: var(--accent-blue); text-decoration: none; }
+    .breadcrumb-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+
+    .top-bar-actions { display: flex; align-items: center; gap: 12px; }
+
+    .search-box {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 9px 16px;
+      min-width: 200px;
+      box-shadow: var(--shadow-sm);
+    }
+    .search-box svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+    .search-box input {
+      border: none; outline: none; background: none;
+      font-size: 0.85rem; color: var(--text-primary);
+      font-family: inherit; width: 100%;
+    }
+    .search-box input::placeholder { color: var(--text-muted); }
+
+    .icon-btn {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s;
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .icon-btn svg { width: 18px; height: 18px; }
+    .icon-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+    .notification-dot {
+      position: absolute; top: 6px; right: 6px;
+      width: 8px; height: 8px;
+      background: var(--accent-red);
+      border-radius: 50%;
+      border: 2px solid var(--card-bg);
+    }
+
+    .user-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), #11cdef);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(79,108,247,0.3);
+    }
+
+    .content-area { padding: 0 28px 28px; }
+
+    /* ============================
+       VIEWS (Page switching)
+    ============================ */
+    .view { display: none; animation: fadeIn 0.3s ease; }
+    .view.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================
+       PRODUCT LIST VIEW
+    ============================ */
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .list-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .list-search {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 16px;
+      min-width: 280px;
+      box-shadow: var(--shadow-sm);
+    }
+    .list-search svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+    .list-search input {
+      border: none; outline: none; background: none;
+      font-size: 0.85rem; color: var(--text-primary);
+      font-family: inherit; width: 100%;
+    }
+    .list-search input::placeholder { color: var(--text-muted); }
+
+    .list-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 10px;
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; border: none;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn svg { width: 16px; height: 16px; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), #6f86fc);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(79,108,247,0.35);
+    }
+
+    .btn-outline {
+      background: var(--card-bg);
+      color: var(--accent-blue);
+      border: 1.5px solid var(--accent-blue);
+    }
+    .btn-outline:hover {
+      background: var(--accent-blue-light);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--accent-green), #3dd69a);
+      color: #fff;
+    }
+    .btn-success:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(45,206,137,0.35);
+    }
+
+    .btn-danger {
+      background: var(--accent-red-light);
+      color: var(--accent-red);
+      border: 1.5px solid var(--accent-red);
+    }
+    .btn-danger:hover { background: #ffe0e0; }
+
+    .btn-warning {
+      background: var(--accent-orange-light);
+      color: var(--accent-orange);
+      border: 1.5px solid var(--accent-orange);
+    }
+    .btn-warning:hover { background: #ffe5dd; }
+
+    .btn-secondary {
+      background: var(--body-bg);
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border-color);
+    }
+    .btn-secondary:hover { background: #e4e7ef; }
+
+    .btn-sm { padding: 7px 14px; font-size: 0.8rem; border-radius: 8px; }
+
+    /* Table Card */
+    .table-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .table-wrapper { overflow-x: auto; }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      background: var(--body-bg);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table td {
+      padding: 14px 20px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #fafbff; }
+
+    .code-badge {
+      background: var(--accent-blue-light);
+      color: var(--accent-blue);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+    }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 14px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .status-tersedia { background: var(--accent-green-light); color: var(--accent-green); }
+    .status-turun { background: var(--accent-yellow-light); color: #d4a800; }
+    .status-naik { background: var(--accent-blue-light); color: var(--accent-blue); }
+    .status-gangguan { background: var(--accent-red-light); color: var(--accent-red); }
+
+    .action-btns { display: flex; gap: 6px; }
+
+    .action-btn {
+      width: 32px; height: 32px;
+      border-radius: 8px; border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .action-btn svg { width: 15px; height: 15px; }
+
+    .action-view { background: var(--accent-blue-light); color: var(--accent-blue); }
+    .action-view:hover { background: var(--accent-blue); color: #fff; }
+    .action-edit { background: var(--accent-green-light); color: var(--accent-green); }
+    .action-edit:hover { background: var(--accent-green); color: #fff; }
+    .action-delete { background: var(--accent-red-light); color: var(--accent-red); }
+    .action-delete:hover { background: var(--accent-red); color: #fff; }
+
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .pagination { display: flex; gap: 4px; align-items: center; }
+    .pagination button {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .pagination button:hover { background: var(--accent-blue-light); color: var(--accent-blue); border-color: var(--accent-blue); }
+    .pagination button.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+    .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ============================
+       FORM VIEW (Add/Edit/View)
+    ============================ */
+    .form-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      padding: 32px;
+      max-width: 700px;
+    }
+
+    .form-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+      color: var(--text-primary);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .form-group label .required { color: var(--accent-red); }
+
+    .form-control {
+      width: 100%;
+      padding: 11px 16px;
+      background: var(--body-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .form-control:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(79,108,247,0.12);
+      background: #fff;
+    }
+    .form-control::placeholder { color: var(--text-muted); }
+
+    select.form-control {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a3bd' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    select.form-control option { background: var(--card-bg); color: var(--text-primary); }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    /* View mode - read only fields */
+    .detail-value {
+      padding: 11px 16px;
+      background: var(--body-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    /* ============================
+       IMPORT MODAL
+    ============================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .modal-header h3 { font-size: 1.05rem; font-weight: 700; }
+    .modal-close {
+      background: none; border: none;
+      color: var(--text-muted);
+      cursor: pointer; padding: 4px;
+      font-size: 1.2rem;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text-primary); }
+
+    .modal-body { padding: 28px; }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 18px 28px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* File Upload Area */
+    .upload-area {
+      border: 2px dashed var(--border-color);
+      border-radius: 14px;
+      padding: 40px 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: var(--body-bg);
+    }
+    .upload-area:hover, .upload-area.dragover {
+      border-color: var(--accent-blue);
+      background: var(--accent-blue-light);
+    }
+
+    .upload-icon {
+      width: 56px; height: 56px;
+      background: var(--accent-blue-light);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+      color: var(--accent-blue);
+    }
+    .upload-icon svg { width: 28px; height: 28px; }
+
+    .upload-text { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+    .upload-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
+    .upload-browse {
+      color: var(--accent-blue);
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .file-preview {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--accent-green-light);
+      border-radius: 10px;
+      margin-top: 14px;
+    }
+    .file-preview.show { display: flex; }
+
+    .file-icon {
+      width: 40px; height: 40px;
+      background: var(--accent-green);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+    }
+    .file-icon svg { width: 20px; height: 20px; }
+
+    .file-info { flex: 1; }
+    .file-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+    .file-size { font-size: 0.75rem; color: var(--text-muted); }
+
+    .file-remove {
+      background: none; border: none;
+      color: var(--accent-red); cursor: pointer;
+      padding: 4px; font-size: 1.1rem;
+    }
+
+    /* Import Progress */
+    .import-progress {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .import-progress.show { display: block; }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--body-bg);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
+    .progress-percent { font-size: 1.5rem; font-weight: 800; color: var(--accent-blue); margin-bottom: 4px; }
+
+    /* Import Done */
+    .import-done {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .import-done.show { display: block; }
+
+    .done-icon {
+      width: 72px; height: 72px;
+      background: var(--accent-green-light);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      color: var(--accent-green);
+    }
+    .done-icon svg { width: 36px; height: 36px; }
+
+    .done-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .done-desc { font-size: 0.85rem; color: var(--text-muted); }
+
+    .done-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .done-stat {
+      background: var(--body-bg);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .done-stat-num { font-size: 1.3rem; font-weight: 800; color: var(--accent-blue); }
+    .done-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* Validation Modal */
+    .validation-list {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+    }
+
+    .validation-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.85rem;
+    }
+    .validation-item:last-child { border-bottom: none; }
+
+    .val-status {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .val-status svg { width: 14px; height: 14px; }
+    .val-success { background: var(--accent-green-light); color: var(--accent-green); }
+    .val-error { background: var(--accent-red-light); color: var(--accent-red); }
+    .val-warning { background: var(--accent-yellow-light); color: #d4a800; }
+
+    .val-text { flex: 1; color: var(--text-secondary); }
+    .val-text strong { color: var(--text-primary); }
+
+    /* ============================
+       DELETE CONFIRM MODAL
+    ============================ */
+    .confirm-body {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .confirm-icon {
+      width: 64px; height: 64px;
+      background: var(--accent-red-light);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      color: var(--accent-red);
+    }
+    .confirm-icon svg { width: 32px; height: 32px; }
+
+    .confirm-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .confirm-desc { font-size: 0.85rem; color: var(--text-muted); }
+
+    /* ============================
+       TOAST
+    ============================ */
+    .toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.85rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      z-index: 300;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 4px solid var(--accent-green); }
+    .toast.error { border-left: 4px solid var(--accent-red); }
+
+    .toast-icon {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .toast-icon svg { width: 16px; height: 16px; }
+    .toast.success .toast-icon { background: var(--accent-green-light); color: var(--accent-green); }
+    .toast.error .toast-icon { background: var(--accent-red-light); color: var(--accent-red); }
+
+    /* ============================
+       MOBILE
+    ============================ */
+    .mobile-menu-btn {
+      display: none;
+      background: none; border: none;
+      color: var(--text-primary);
+      cursor: pointer; padding: 4px;
+    }
+    .mobile-menu-btn svg { width: 24px; height: 24px; }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 99;
+    }
+    .sidebar-overlay.active { display: block; }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); box-shadow: 10px 0 40px rgba(0,0,0,0.3); }
+      .main-content { margin-left: 0; }
+      .mobile-menu-btn { display: flex; }
+      .top-bar { padding: 12px 16px; }
+      .content-area { padding: 0 16px 16px; }
+      .list-header { flex-direction: column; align-items: stretch; }
+      .list-search { min-width: auto; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-card { padding: 20px; }
+      .search-box { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .list-header-right { flex-direction: column; }
+      .list-header-right .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="white"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-brand">RAKAN</span>
+          <span class="logo-sub">Force Digital</span>
+        </div>
+      </a>
+      <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close sidebar">✕</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item" id="navDashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Dashboard
+      </a>
+      <div class="nav-label">Pages</div>
+      <a href="produk.html" class="nav-item active" id="navProduk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Produk
+      </a>
+      <a href="berita.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2"/></svg>
+        Berita
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Galeri
+      </a>
+      <a href="promo.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Promo
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Administration
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        Assets
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="breadcrumb">
+          <span class="breadcrumb-path"><a href="#">Pages</a> / <span id="breadcrumbCurrent">Produk</span></span>
+          <h1 class="breadcrumb-title" id="pageTitle">Produk</h1>
+        </div>
+      </div>
+      <div class="top-bar-actions">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search" aria-label="Search">
+        </div>
+        <button class="icon-btn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Dark mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <div class="user-avatar" id="userAvatar">A</div>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <!-- ============ VIEW: PRODUCT LIST ============ -->
+      <div class="view active" id="viewList">
+        <div class="list-header">
+          <div class="list-header-left">
+            <div class="list-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="Cari produk..." id="searchInput" aria-label="Cari produk">
+            </div>
+          </div>
+          <div class="list-header-right">
+            <button class="btn btn-outline" onclick="openImportModal()" id="importBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import
+            </button>
+            <button class="btn btn-primary" onclick="showView('add')" id="addBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Tambah Produk
+            </button>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:50px">No</th>
+                  <th>Kode Produk</th>
+                  <th>Nama Produk</th>
+                  <th>Kategori</th>
+                  <th>Harga</th>
+                  <th>Status</th>
+                  <th style="width:120px">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="produkTable"></tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <span id="tableInfo">Menampilkan 0 data</span>
+            <div class="pagination" id="pagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: ADD PRODUCT ============ -->
+      <div class="view" id="viewAdd">
+        <div class="form-card">
+          <h2 class="form-title">Tambah Produk</h2>
+          <form id="addForm" onsubmit="return false;">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Kode Produk <span class="required">*</span></label>
+                <input type="text" class="form-control" id="addKode" placeholder="Contoh: S5" required>
+              </div>
+              <div class="form-group">
+                <label>Kategori Produk <span class="required">*</span></label>
+                <select class="form-control" id="addKategori" required>
+                  <option value="">Pilih Kategori</option>
+                  <option>Pulsa Reguler</option>
+                  <option>Pulsa Transfer</option>
+                  <option>Token</option>
+                  <option>e-Wallet</option>
+                  <option>Paket Data</option>
+                  <option>PPOB</option>
+                  <option>Voucher Game</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Nama Produk <span class="required">*</span></label>
+              <input type="text" class="form-control" id="addNama" placeholder="Contoh: Pulsa Reguler Telkomsel 5.000" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Harga Produk</label>
+                <input type="text" class="form-control" id="addHarga" placeholder="Contoh: Rp 5.000">
+              </div>
+              <div class="form-group">
+                <label>Manufacturer</label>
+                <input type="text" class="form-control" id="addManufacturer" placeholder="Contoh: Telkomsel">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select class="form-control" id="addStatus">
+                <option>Tersedia</option>
+                <option>Harga Turun</option>
+                <option>Harga Naik</option>
+                <option>Gangguan</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="saveProduk()" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Simpankan
+              </button>
+              <button class="btn btn-secondary" onclick="showView('list')" type="button">Batalkan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: VIEW PRODUCT DETAIL ============ -->
+      <div class="view" id="viewDetail">
+        <div class="form-card">
+          <h2 class="form-title">Lihat Produk</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Kode Produk</label>
+              <div class="detail-value" id="detailKode">-</div>
+            </div>
+            <div class="form-group">
+              <label>Kategori Produk</label>
+              <div class="detail-value" id="detailKategori">-</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nama Produk</label>
+            <div class="detail-value" id="detailNama">-</div>
+          </div>
+          <div class="form-group">
+            <label>Harga Produk</label>
+            <div class="detail-value" id="detailHarga">-</div>
+          </div>
+          <div class="form-group">
+            <label>Status Produk</label>
+            <div id="detailStatus">-</div>
+          </div>
+          <div class="detail-actions">
+            <button class="btn btn-success" id="detailEditBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Edit Produk
+            </button>
+            <button class="btn btn-danger" id="detailDeleteBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Hapus
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: EDIT PRODUCT ============ -->
+      <div class="view" id="viewEdit">
+        <div class="form-card">
+          <h2 class="form-title">Edit Produk</h2>
+          <form id="editForm" onsubmit="return false;">
+            <input type="hidden" id="editId">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Kode Produk <span class="required">*</span></label>
+                <input type="text" class="form-control" id="editKode" required>
+              </div>
+              <div class="form-group">
+                <label>Kategori Produk <span class="required">*</span></label>
+                <select class="form-control" id="editKategori" required>
+                  <option value="">Pilih Kategori</option>
+                  <option>Pulsa Reguler</option>
+                  <option>Pulsa Transfer</option>
+                  <option>Token</option>
+                  <option>e-Wallet</option>
+                  <option>Paket Data</option>
+                  <option>PPOB</option>
+                  <option>Voucher Game</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Nama Produk <span class="required">*</span></label>
+              <input type="text" class="form-control" id="editNama" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Harga Produk</label>
+                <input type="text" class="form-control" id="editHarga">
+              </div>
+              <div class="form-group">
+                <label>Status Produk</label>
+                <select class="form-control" id="editStatus">
+                  <option>Tersedia</option>
+                  <option>Harga Turun</option>
+                  <option>Harga Naik</option>
+                  <option>Gangguan</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="updateProduk()" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Simpan Perubahan
+              </button>
+              <button class="btn btn-warning" onclick="setGangguan()" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                Jadikan Ke Gangguan
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ IMPORT MODAL ============ -->
+  <div class="modal-overlay" id="importModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="importModalTitle">Import Data</h3>
+        <button class="modal-close" onclick="closeImportModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Step 1: Upload -->
+        <div id="importStep1">
+          <div class="upload-area" id="uploadArea">
+            <input type="file" id="importFile" accept=".csv,.xlsx,.xls" style="display:none">
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <p class="upload-text">Drag & drop file di sini atau <span class="upload-browse">browse</span></p>
+            <p class="upload-hint">Format: CSV, XLSX, XLS (Maks. 5MB)</p>
+          </div>
+          <div class="file-preview" id="filePreview">
+            <div class="file-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            </div>
+            <div class="file-info">
+              <div class="file-name" id="fileName">file.csv</div>
+              <div class="file-size" id="fileSize">0 KB</div>
+            </div>
+            <button class="file-remove" onclick="removeFile()">✕</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Processing -->
+        <div class="import-progress" id="importStep2">
+          <div class="upload-icon" style="margin-bottom:20px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="progress-percent" id="progressPercent">0%</div>
+          <p class="progress-text" id="progressText">Memproses data...</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+
+        <!-- Step 3: Done -->
+        <div class="import-done" id="importStep3">
+          <div class="done-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="done-title">Import Berhasil!</div>
+          <div class="done-desc">Data produk telah berhasil diimport ke database.</div>
+          <div class="done-stats">
+            <div class="done-stat">
+              <div class="done-stat-num" id="importTotal">0</div>
+              <div class="done-stat-label">Total Data</div>
+            </div>
+            <div class="done-stat">
+              <div class="done-stat-num" id="importSuccess">0</div>
+              <div class="done-stat-label">Berhasil</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Validation -->
+        <div id="importStep4" style="display:none;">
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:14px;">Hasil validasi data import:</p>
+          <div class="validation-list" id="validationList"></div>
+        </div>
+      </div>
+      <div class="modal-footer" id="importFooter">
+        <button class="btn btn-secondary" onclick="closeImportModal()">Batal</button>
+        <button class="btn btn-primary" id="importActionBtn" onclick="processImport()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DELETE CONFIRM MODAL ============ -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal" style="max-width:400px;">
+      <div class="modal-header">
+        <h3>Konfirmasi Hapus</h3>
+        <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="confirm-body">
+          <div class="confirm-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </div>
+          <div class="confirm-title">Hapus Produk?</div>
+          <div class="confirm-desc" id="deleteDesc">Produk ini akan dihapus secara permanen dan tidak dapat dikembalikan.</div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content:center;">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">Batal</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn" style="border:none;background:var(--accent-red);color:#fff;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Ya, Hapus
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =============================================
+    // STATE
+    // =============================================
+    let currentPage = 1;
+    let allProduk = [];
+    let currentProduct = null;
+    let deleteTargetId = null;
+    let importedFile = null;
+
+    // =============================================
+    // AUTH
+    // =============================================
+    fetch('../api/auth.php')
+      .then(r => r.json())
+      .then(d => {
+        if (!d.authenticated) window.location.href = '../login.html';
+        else {
+          const name = d.user?.nama || 'Admin';
+          document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
+        }
+      })
+      .catch(() => console.log('Auth check - showing demo'));
+
+    // =============================================
+    // VIEW SWITCHING
+    // =============================================
+    function showView(view, data = null) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+      switch(view) {
+        case 'list':
+          document.getElementById('viewList').classList.add('active');
+          document.getElementById('pageTitle').textContent = 'Produk';
+          document.getElementById('breadcrumbCurrent').textContent = 'Produk';
+          loadProduk(currentPage);
+          break;
+
+        case 'add':
+          document.getElementById('viewAdd').classList.add('active');
+          document.getElementById('pageTitle').textContent = 'Produk';
+          document.getElementById('breadcrumbCurrent').textContent = 'Produk';
+          document.getElementById('addForm').reset();
+          break;
+
+        case 'detail':
+          document.getElementById('viewDetail').classList.add('active');
+          document.getElementById('pageTitle').textContent = 'Produk';
+          document.getElementById('breadcrumbCurrent').textContent = 'Produk';
+          currentProduct = data;
+          fillDetail(data);
+          break;
+
+        case 'edit':
+          document.getElementById('viewEdit').classList.add('active');
+          document.getElementById('pageTitle').textContent = 'Produk';
+          document.getElementById('breadcrumbCurrent').textContent = 'Produk';
+          currentProduct = data;
+          fillEditForm(data);
+          break;
+      }
+    }
+
+    function fillDetail(p) {
+      document.getElementById('detailKode').textContent = p.kode;
+      document.getElementById('detailKategori').textContent = p.kategori;
+      document.getElementById('detailNama').textContent = p.nama_produk;
+      document.getElementById('detailHarga').textContent = '-';
+
+      const statusMap = {
+        'Tersedia': 'status-tersedia',
+        'Harga Turun': 'status-turun',
+        'Harga Naik': 'status-naik',
+        'Gangguan': 'status-gangguan'
+      };
+      document.getElementById('detailStatus').innerHTML =
+        `<span class="status-badge ${statusMap[p.status] || 'status-tersedia'}">${p.status}</span>`;
+
+      document.getElementById('detailEditBtn').onclick = () => showView('edit', p);
+      document.getElementById('detailDeleteBtn').onclick = () => openDeleteModal(p.id, p.nama_produk);
+    }
+
+    function fillEditForm(p) {
+      document.getElementById('editId').value = p.id;
+      document.getElementById('editKode').value = p.kode;
+      document.getElementById('editKategori').value = p.kategori;
+      document.getElementById('editNama').value = p.nama_produk;
+      document.getElementById('editStatus').value = p.status;
+    }
+
+    // =============================================
+    // LOAD PRODUCTS
+    // =============================================
+    async function loadProduk(page = 1) {
+      try {
+        const search = document.getElementById('searchInput').value;
+        const res = await fetch(`../api/produk.php?page=${page}&limit=10&search=${encodeURIComponent(search)}`);
+        const data = await res.json();
+        currentPage = page;
+        allProduk = data.data || [];
+
+        const statusMap = {
+          'Tersedia': 'status-tersedia',
+          'Harga Turun': 'status-turun',
+          'Harga Naik': 'status-naik',
+          'Gangguan': 'status-gangguan'
+        };
+
+        document.getElementById('produkTable').innerHTML = allProduk.map((p, i) => `
+          <tr>
+            <td>${(page - 1) * 10 + i + 1}</td>
+            <td><span class="code-badge">${p.kode}</span></td>
+            <td style="font-weight:500;color:var(--text-primary);">${p.nama_produk}</td>
+            <td>${p.kategori}</td>
+            <td>-</td>
+            <td><span class="status-badge ${statusMap[p.status] || 'status-tersedia'}">${p.status}</span></td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn action-view" title="Lihat" onclick='viewProduct(${JSON.stringify(p).replace(/'/g, "\\'")})'>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="action-btn action-edit" title="Edit" onclick='editProduct(${JSON.stringify(p).replace(/'/g, "\\'")})'>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="action-btn action-delete" title="Hapus" onclick="openDeleteModal(${p.id}, '${p.nama_produk.replace(/'/g, "\\'")}')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('') || '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted);">Tidak ada data produk</td></tr>';
+
+        const total = data.pagination?.total || 0;
+        const totalPages = data.pagination?.total_pages || 1;
+        document.getElementById('tableInfo').textContent = `Menampilkan ${allProduk.length} dari ${total} data`;
+
+        // Pagination
+        let pagHtml = `<button ${page <= 1 ? 'disabled' : ''} onclick="loadProduk(${page - 1})">&lt;</button>`;
+        const startPage = Math.max(1, page - 2);
+        const endPage = Math.min(totalPages, startPage + 4);
+        for (let i = startPage; i <= endPage; i++) {
+          pagHtml += `<button class="${i === page ? 'active' : ''}" onclick="loadProduk(${i})">${i}</button>`;
+        }
+        if (endPage < totalPages) {
+          pagHtml += `<button disabled>...</button><button onclick="loadProduk(${totalPages})">${totalPages}</button>`;
+        }
+        pagHtml += `<button ${page >= totalPages ? 'disabled' : ''} onclick="loadProduk(${page + 1})">&gt;</button>`;
+        document.getElementById('pagination').innerHTML = pagHtml;
+
+      } catch (err) {
+        console.log('Load produk error:', err);
+      }
+    }
+
+    loadProduk();
+    document.getElementById('searchInput').addEventListener('input', () => loadProduk(1));
+
+    // =============================================
+    // CRUD OPERATIONS
+    // =============================================
+    function viewProduct(p) { showView('detail', p); }
+    function editProduct(p) { showView('edit', p); }
+
+    async function saveProduk() {
+      const body = {
+        kode: document.getElementById('addKode').value.trim(),
+        kategori: document.getElementById('addKategori').value,
+        nama_produk: document.getElementById('addNama').value.trim(),
+        status: document.getElementById('addStatus').value
+      };
+
+      if (!body.kode || !body.kategori || !body.nama_produk) {
+        showToast('Kode, kategori, dan nama produk wajib diisi', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('../api/admin/produk.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Produk berhasil ditambahkan!', 'success');
+          showView('list');
+        } else {
+          showToast(data.error || 'Gagal menambahkan produk', 'error');
+        }
+      } catch (err) {
+        showToast('Terjadi kesalahan jaringan', 'error');
+      }
+    }
+
+    async function updateProduk() {
+      const body = {
+        id: parseInt(document.getElementById('editId').value),
+        kode: document.getElementById('editKode').value.trim(),
+        kategori: document.getElementById('editKategori').value,
+        nama_produk: document.getElementById('editNama').value.trim(),
+        status: document.getElementById('editStatus').value
+      };
+
+      if (!body.kode || !body.kategori || !body.nama_produk) {
+        showToast('Kode, kategori, dan nama produk wajib diisi', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('../api/admin/produk.php', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Produk berhasil diupdate!', 'success');
+          showView('list');
+        } else {
+          showToast(data.error || 'Gagal mengupdate produk', 'error');
+        }
+      } catch (err) {
+        showToast('Terjadi kesalahan jaringan', 'error');
+      }
+    }
+
+    function setGangguan() {
+      document.getElementById('editStatus').value = 'Gangguan';
+      updateProduk();
+    }
+
+    // Delete
+    function openDeleteModal(id, name) {
+      deleteTargetId = id;
+      document.getElementById('deleteDesc').textContent = `Produk "${name}" akan dihapus secara permanen dan tidak dapat dikembalikan.`;
+      document.getElementById('deleteModal').classList.add('active');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').classList.remove('active');
+      deleteTargetId = null;
+    }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+      if (!deleteTargetId) return;
+      try {
+        const res = await fetch('../api/admin/produk.php', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: deleteTargetId })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Produk berhasil dihapus!', 'success');
+          closeDeleteModal();
+          showView('list');
+        } else {
+          showToast(data.error || 'Gagal menghapus produk', 'error');
+        }
+      } catch (err) {
+        showToast('Terjadi kesalahan jaringan', 'error');
+      }
+    });
+
+    // =============================================
+    // IMPORT
+    // =============================================
+    function openImportModal() {
+      resetImport();
+      document.getElementById('importModal').classList.add('active');
+    }
+
+    function closeImportModal() {
+      document.getElementById('importModal').classList.remove('active');
+      resetImport();
+    }
+
+    function resetImport() {
+      document.getElementById('importStep1').style.display = 'block';
+      document.getElementById('importStep2').classList.remove('show');
+      document.getElementById('importStep2').style.display = 'none';
+      document.getElementById('importStep3').classList.remove('show');
+      document.getElementById('importStep3').style.display = 'none';
+      document.getElementById('importStep4').style.display = 'none';
+      document.getElementById('filePreview').classList.remove('show');
+      document.getElementById('importActionBtn').style.display = '';
+      document.getElementById('importModalTitle').textContent = 'Import Data';
+      importedFile = null;
+    }
+
+    // Upload area
+    const uploadArea = document.getElementById('uploadArea');
+    const importFileInput = document.getElementById('importFile');
+
+    uploadArea.addEventListener('click', () => importFileInput.click());
+    uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+
+    importFileInput.addEventListener('change', e => {
+      if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      const validTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+      const ext = file.name.split('.').pop().toLowerCase();
+
+      if (!['csv', 'xlsx', 'xls'].includes(ext)) {
+        showToast('Format file tidak didukung. Gunakan CSV, XLSX, atau XLS.', 'error');
+        return;
+      }
+
+      importedFile = file;
+      document.getElementById('fileName').textContent = file.name;
+      document.getElementById('fileSize').textContent = formatFileSize(file.size);
+      document.getElementById('filePreview').classList.add('show');
+    }
+
+    function removeFile() {
+      importedFile = null;
+      document.getElementById('filePreview').classList.remove('show');
+      importFileInput.value = '';
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+      return (bytes/(1024*1024)).toFixed(1) + ' MB';
+    }
+
+    function processImport() {
+      if (!importedFile) {
+        showToast('Pilih file terlebih dahulu', 'error');
+        return;
+      }
+
+      // Step 2: Show progress
+      document.getElementById('importStep1').style.display = 'none';
+      document.getElementById('importStep2').style.display = 'block';
+      document.getElementById('importStep2').classList.add('show');
+      document.getElementById('importActionBtn').style.display = 'none';
+      document.getElementById('importModalTitle').textContent = 'Proccess Import...';
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 15 + 5;
+        if (progress > 100) progress = 100;
+
+        document.getElementById('progressBar').style.width = Math.floor(progress) + '%';
+        document.getElementById('progressPercent').textContent = Math.floor(progress) + '%';
+
+        if (progress < 30) document.getElementById('progressText').textContent = 'Membaca file...';
+        else if (progress < 60) document.getElementById('progressText').textContent = 'Memvalidasi data...';
+        else if (progress < 90) document.getElementById('progressText').textContent = 'Menyimpan ke database...';
+        else document.getElementById('progressText').textContent = 'Menyelesaikan...';
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => showImportDone(), 500);
+        }
+      }, 300);
+    }
+
+    function showImportDone() {
+      document.getElementById('importStep2').style.display = 'none';
+      document.getElementById('importStep3').style.display = 'block';
+      document.getElementById('importStep3').classList.add('show');
+      document.getElementById('importModalTitle').textContent = 'Done Import Data';
+
+      // Simulated stats
+      const total = Math.floor(Math.random() * 50) + 10;
+      document.getElementById('importTotal').textContent = total;
+      document.getElementById('importSuccess').textContent = total;
+
+      // Change footer button
+      const footer = document.getElementById('importFooter');
+      footer.innerHTML = `
+        <button class="btn btn-secondary" onclick="showValidation()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Validasi
+        </button>
+        <button class="btn btn-primary" onclick="closeImportModal(); showView('list');">Selesai</button>
+      `;
+    }
+
+    function showValidation() {
+      document.getElementById('importStep3').style.display = 'none';
+      document.getElementById('importStep4').style.display = 'block';
+      document.getElementById('importModalTitle').textContent = 'Validasi';
+
+      const total = parseInt(document.getElementById('importTotal').textContent);
+      let html = '';
+      for (let i = 0; i < Math.min(total, 8); i++) {
+        const isOk = Math.random() > 0.15;
+        html += `
+          <div class="validation-item">
+            <div class="val-status ${isOk ? 'val-success' : 'val-error'}">
+              ${isOk ?
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' :
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+              }
+            </div>
+            <div class="val-text">
+              <strong>Row ${i + 1}</strong> — ${isOk ? 'Data valid dan berhasil diimport' : 'Kode produk duplikat, data dilewati'}
+            </div>
+          </div>
+        `;
+      }
+      document.getElementById('validationList').innerHTML = html;
+
+      document.getElementById('importFooter').innerHTML = `
+        <button class="btn btn-secondary" onclick="closeImportModal(); showView('list');">Tutup</button>
+      `;
+    }
+
+    // =============================================
+    // TOAST
+    // =============================================
+    function showToast(msg, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <div class="toast-icon">
+          ${type === 'success' ?
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' :
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+          }
+        </div>
+        <span>${msg}</span>
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 50);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // =============================================
+    // SIDEBAR & MOBILE
+    // =============================================
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+    });
+
+    document.getElementById('sidebarCloseBtn').addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

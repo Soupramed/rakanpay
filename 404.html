@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Halaman tidak ditemukan - Rakan Ponsel Digital">
+  <title>404 - Halaman Tidak Ditemukan | Rakan Ponsel Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-logo rakanpay-logo">
+
+        <img src="assets/images/logo.png" alt="RakanPay Logo" class="official-logo">
+      
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="produk.html">Produk</a></li>
+        <li><a href="berita.html">Berita</a></li>
+        <li><a href="promo.html">Promo</a></li>
+        <li><a href="about.html">Tentang Kami</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="nav-search" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        <a href="https://play.google.com/store/apps/details?id=com.otoreport.rakandigital&pcampaignid=web_share" target="_blank" class="btn btn-primary">Unduh APK</a>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Error Page -->
+  <section class="error-page">
+    <div class="error-content">
+      <div class="error-code">404</div>
+      <h1>Halaman Tidak Ditemukan</h1>
+      <p>Maaf, halaman yang Anda cari tidak tersedia atau telah dipindahkan. Silakan kembali ke beranda atau hubungi kami jika Anda memerlukan bantuan.</p>
+      <div class="error-actions">
+        <a href="index.html" class="btn btn-primary btn-lg">Kembali ke Beranda</a>
+        <a href="kontak.html" class="btn btn-outline btn-lg">Hubungi Kami</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 10); });
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navLinks = document.getElementById('navLinks');
+    mobileToggle.addEventListener('click', () => { navLinks.classList.toggle('open'); });
+    document.querySelectorAll('.nav-links a').forEach(link => { link.addEventListener('click', () => { navLinks.classList.remove('open'); }); });
+  </script>
+</body>
+</html>

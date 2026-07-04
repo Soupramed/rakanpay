@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Produk lengkap Rakan Ponsel Digital - Pulsa, Paket Data, Token Listrik, E-Wallet, Transfer Bank, PPOB, Voucher Game, dan Asuransi dengan harga termurah.">
+  <meta name="keywords" content="pulsa murah, paket data, token listrik, e-wallet, PPOB, voucher game, transfer bank, asuransi digital">
+  <meta name="author" content="Rakan Ponsel Digital">
+  <title>Produk - Rakan Ponsel Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-logo rakanpay-logo">
+
+        <img src="assets/images/logo.png" alt="RakanPay Logo" class="official-logo">
+      
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="produk.html" class="active">Produk</a></li>
+        <li><a href="berita.html">Berita</a></li>
+        <li><a href="promo.html">Promo</a></li>
+        <li><a href="about.html">Tentang Kami</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="nav-search" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        <a href="https://play.google.com/store/apps/details?id=com.otoreport.rakandigital&pcampaignid=web_share" target="_blank" class="btn btn-primary">Unduh APK</a>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Produk Table Section -->
+  <section class="produk-table-section">
+    <div class="container">
+      <div class="pts-header">
+        <h1>Produk</h1>
+        <p>Dapatkan produk terkini dari rakan ponsel digital dan cek detail produk yang anda inginkan</p>
+      </div>
+
+      <div class="pts-table-card">
+        <div class="pts-controls">
+          <div class="pts-show">
+            Show <select><option>10</option></select> entries
+          </div>
+          <div class="pts-filters">
+            <div class="pts-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="Search...">
+            </div>
+            <div class="pts-sort">
+              Short by : <select><option>Newest</option></select>
+            </div>
+            <div class="pts-sort">
+              Short by : <select><option>Kategori</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="pts-table-wrapper">
+          <table class="pts-table">
+            <thead>
+              <tr>
+                <th>No <span class="sort-icon"></span></th>
+                <th>Kode <span class="sort-icon"></span></th>
+                <th>Kategori <span class="sort-icon"></span></th>
+                <th>Nama Produk <span class="sort-icon"></span></th>
+                <th class="text-right">Status <span class="sort-icon"></span></th>
+              </tr>
+            </thead>
+            <tbody id="produkTableBody">
+              <tr><td colspan="5" style="text-align:center;padding:40px;color:#94a3b8;">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pts-footer">
+          <div class="pts-info" id="ptsInfo">Showing data 0 to 0 of 0 entries</div>
+          <div class="pts-pagination" id="ptsPagination"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promo Ad Section -->
+  <section class="ad-section">
+    <div class="container">
+      <div class="ad-banner">
+        <div class="ad-content">
+          <span class="ad-badge">PROMO SPESIAL</span>
+          <h2>Cashback 10% Pembelian Pulsa & Paket Data</h2>
+          <p>Dapatkan cashback hingga Rp 50.000 untuk setiap transaksi pulsa dan paket data menggunakan saldo RakanPay. Promo terbatas!</p>
+          <a href="promo.html" class="btn btn-white" style="color: var(--primary);">Klaim Sekarang</a>
+        </div>
+        <div class="ad-visual" style="background: linear-gradient(45deg, #1E3A8A, #3B82F6); position: relative; overflow: hidden;">
+          <div style="position: absolute; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.1); top: -50px; right: -50px;"></div>
+          <div style="position: absolute; width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,0.1); bottom: -50px; left: -20px;"></div>
+          <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white; font-size: 3rem; font-weight: 900; font-style: italic;">
+            -10%
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Mulai Transaksi Sekarang</h2>
+      <p>Gabung bersama ribuan mitra Rakan Ponsel Digital dan nikmati kemudahan bertransaksi produk digital dengan keuntungan maksimal.</p>
+      <div class="cta-buttons">
+        <a href="register.html" class="btn btn-white-outline btn-lg">Daftar Gratis</a>
+        <a href="kontak.html" class="btn btn-dark btn-lg">Hubungi Kami</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+    <footer class="footer-new">
+    <div class="container footer-new-grid">
+      <div class="fn-brand">
+        <div class="fn-logo rakanpay-logo">
+
+          <img src="assets/images/logo.png" alt="RakanPay Logo" class="official-logo">
+        
+        </div>
+        <div class="fn-social">
+          <a href="https://instagram.com/rakanponsel" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a href="https://facebook.com/rakanponsel" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+          <a href="https://tiktok.com/@rakanponsel" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.52a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.53V2a4.84 4.84 0 01-.19-.31z"/></svg></a>
+          <a href="https://youtube.com/@rakanponsel" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.43z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="white"/></svg></a>
+        </div>
+        <p>CV. RAKAN PONSEL DIGITAL<br>Jl. Muhammadiyah No.59, Batoh, Lueng Bata,<br>Kota Banda Aceh</p>
+      </div>
+      <div class="fn-links">
+        <h4>Layanan</h4>
+        <ul>
+          <li><a href="https://wa.me/6289600000000">Support Live Chat</a></li>
+          <li><a href="produk.html">QRIS Merchant</a></li>
+          <li><a href="faq.html">Pusat Bantuan</a></li>
+        </ul>
+      </div>
+      <div class="fn-links">
+        <h4>Lainnya</h4>
+        <ul>
+          <li><a href="kebijakan-privasi.html">Kebijakan Privasi</a></li>
+          <li><a href="syarat-ketentuan.html">Syarat dan Ketentuan</a></li>
+        </ul>
+      </div>
+      <div class="fn-apps">
+        <div class="app-btn-mock">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <div>
+            <span>KOTAK SARAN</span>
+            <strong>RAKAN PONSEL DIGITAL</strong>
+          </div>
+        </div>
+        <a href="https://play.google.com/store/apps/details?id=com.otoreport.rakandigital&pcampaignid=web_share" target="_blank" class="play-store-badge">
+          <img src="https://play.google.com/intl/en_us/badges/static/images/badges/id_badge_web_generic.png" alt="Temukan di Google Play" style="height: 60px; width: auto; margin-top: -5px; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </a>
+      </div>
+    </div>
+    
+  </footer>
+
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 10); });
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navLinks = document.getElementById('navLinks');
+    mobileToggle.addEventListener('click', () => { navLinks.classList.toggle('open'); });
+    document.querySelectorAll('.nav-links a').forEach(link => { link.addEventListener('click', () => { navLinks.classList.remove('open'); }); });
+    const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; } }); }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.stat-card, .why-card, .product-item, .step-card, .news-featured-card, .news-small-card, .testimonial-card, .product-cat-card, .product-list-card, .berita-card, .promo-card, .value-card, .team-card, .contact-info-item').forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(24px)'; el.style.transition = 'opacity 0.6s ease, transform 0.6s ease'; observer.observe(el); });
+
+    // ====== DYNAMIC PRODUK FROM DATABASE ======
+    let currentPage = 1;
+    const searchInput = document.querySelector('.pts-search input');
+    const sortSelect = document.querySelectorAll('.pts-sort select');
+    const limitSelect = document.querySelector('.pts-show select');
+
+    async function loadProduk(page = 1) {
+      currentPage = page;
+      const search = searchInput ? searchInput.value : '';
+      const sort = sortSelect[0] ? sortSelect[0].value.toLowerCase() : 'newest';
+      const kategori = sortSelect[1] ? sortSelect[1].value : '';
+      const limit = limitSelect ? limitSelect.value : 10;
+
+      try {
+        const res = await fetch(`api/produk.php?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&sort=${sort}&kategori=${kategori !== 'Kategori' ? encodeURIComponent(kategori) : ''}`);
+        const data = await res.json();
+
+        if (!data.success) throw new Error('API error');
+
+        // Status badge mapping
+        const statusBadge = {
+          'Tersedia': `<span class="badge badge-success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tersedia</span>`,
+          'Harga Turun': `<span class="badge badge-warning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> Harga Turun</span>`,
+          'Harga Naik': `<span class="badge badge-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg> Harga Naik</span>`,
+          'Gangguan': `<span class="badge badge-danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> Gangguan</span>`
+        };
+
+        const tbody = document.getElementById('produkTableBody');
+        tbody.innerHTML = data.data.map((p, i) => `
+          <tr>
+            <td>${(page - 1) * limit + i + 1}</td>
+            <td>${p.kode}</td>
+            <td>${p.kategori}</td>
+            <td>${p.nama_produk}</td>
+            <td class="text-right">${statusBadge[p.status] || statusBadge['Tersedia']}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="5" style="text-align:center;padding:40px;color:#94a3b8;">Tidak ada data ditemukan</td></tr>';
+
+        // Update info
+        const start = (page - 1) * limit + 1;
+        const end = Math.min(page * limit, data.pagination.total);
+        document.getElementById('ptsInfo').textContent = `Showing data ${data.data.length > 0 ? start : 0} to ${end} of ${data.pagination.total.toLocaleString()} entries`;
+
+        // Update pagination
+        const totalPages = data.pagination.total_pages;
+        let pagHtml = `<button onclick="loadProduk(${page - 1})" ${page <= 1 ? 'disabled' : ''}>&lt;</button>`;
+        const maxVisible = 4;
+        for (let i = 1; i <= Math.min(totalPages, maxVisible); i++) {
+          pagHtml += `<button class="${i === page ? 'active' : ''}" onclick="loadProduk(${i})">${i}</button>`;
+        }
+        if (totalPages > maxVisible) {
+          pagHtml += `<span class="dots">...</span>`;
+          pagHtml += `<button onclick="loadProduk(${totalPages})">${totalPages}</button>`;
+        }
+        pagHtml += `<button onclick="loadProduk(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>&gt;</button>`;
+        document.getElementById('ptsPagination').innerHTML = pagHtml;
+
+        // Populate category filter
+        if (data.categories && sortSelect[1]) {
+          const currentVal = sortSelect[1].value;
+          sortSelect[1].innerHTML = '<option>Kategori</option>' + data.categories.map(c => `<option ${c === currentVal ? 'selected' : ''}>${c}</option>`).join('');
+        }
+
+      } catch (err) {
+        console.error('Error loading produk:', err);
+        document.getElementById('produkTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#94a3b8;">Gagal memuat data. Pastikan server PHP berjalan.</td></tr>';
+      }
+    }
+
+    // Load on page ready
+    loadProduk();
+
+    // Search with debounce
+    let searchTimer;
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => loadProduk(1), 300);
+      });
+    }
+
+    // Sort & Category filter
+    sortSelect.forEach(sel => sel.addEventListener('change', () => loadProduk(1)));
+    if (limitSelect) limitSelect.addEventListener('change', () => loadProduk(1));
+  </script>
+
+</body>
+</html>
