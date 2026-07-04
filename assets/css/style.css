@@ -2236,17 +2236,7 @@ img {
   position: relative;
 }
 
-.about-team::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, var(--primary), transparent);
-  border-radius: 2px;
-}
+/* Blue line effect removed based on user request */
 
 .section-badge {
   display: inline-block;
